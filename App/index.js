@@ -1,30 +1,39 @@
 // Filename: index.js
 // Combined code from all files
 
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Button, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export default function App() {
-    const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
+    const [currentLetter, setCurrentLetter] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    const nextLetter = () => {
-        setCurrentLetterIndex((prevIndex) => (prevIndex + 1) % letters.length);
+    useEffect(() => {
+        setCurrentLetter(letters[Math.floor(Math.random() * letters.length)]);
+        setLoading(false);
+    }, []);
+
+    const handleNextLetter = () => {
+        setLoading(true);
+        setCurrentLetter(letters[Math.floor(Math.random() * letters.length)]);
+        setLoading(false);
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollView}>
-                <View style={styles.letterContainer}>
-                    <Text style={styles.letter}>{letters[currentLetterIndex]}</Text>
-                </View>
-                <Button 
-                    title="Next Letter" 
-                    onPress={nextLetter} 
-                    style={styles.button}
-                />
-            </ScrollView>
+            <Text style={styles.title}>Learn to Read</Text>
+            <View style={styles.box}>
+                {loading ? (
+                    <ActivityIndicator size="large" color="#00ff00" />
+                ) : (
+                    <Text style={styles.letter}>{currentLetter}</Text>
+                )}
+            </View>
+            <TouchableOpacity style={styles.button} onPress={handleNextLetter}>
+                <Text style={styles.buttonText}>Next Letter</Text>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 }
@@ -32,28 +41,35 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 20,
-    },
-    scrollView: {
-        flex: 1,
-        justifyContent: 'center',
+        paddingTop: 50,
         alignItems: 'center',
+        backgroundColor: '#f0f8ff',
     },
-    letterContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 300,
-        width: 300,
-        margin: 20,
-        borderWidth: 2,
-        borderColor: '#000',
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    box: {
+        backgroundColor: '#FFD700',
+        padding: 50,
         borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
     },
     letter: {
         fontSize: 100,
         fontWeight: 'bold',
     },
     button: {
-        marginTop: 20,
+        backgroundColor: '#4682B4',
+        padding: 10,
+        borderRadius: 5,
+    },
+    buttonText: {
+        fontSize: 20,
+        color: '#fff',
+        fontWeight: 'bold',
     },
 });
